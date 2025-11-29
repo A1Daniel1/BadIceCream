@@ -16,6 +16,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+//... tus imports actuales ...
+import java.awt.Image; // IMPORTANTE
+import java.io.IOException; // IMPORTANTE
+import javax.imageio.ImageIO; // IMPORTANTE
+import java.io.File; // Opcional si usas carga por archivo direct
+
 import javax.swing.JPanel;
 
 /**
@@ -26,9 +32,61 @@ class GameBoardPanel extends JPanel {
     public Game game;
     private static final int CELL_SIZE = 40;
     
+    private Image fresaImage;
+    private Image chocolateImage;
+    private Image vainillaImage;
+    private Image iceImage;
+    private Image muroImage;
+    private Image fogataImage;
+    private Image baldosaCaliente;
+    private Image calamarImage;
+    private Image trollImage;
+    private Image narvalImage;
+    private Image platanoImage;
+    private Image uvaImage;
+    private Image piñaImage;
+    private Image cerezaImage;
+    private Image defaulFruitImage;
+    private Image nieveImage;
+    
     public GameBoardPanel(Game game) {
         this.game = game;
         setBackground(new Color(200, 230, 255));
+        loadImages();
+    }
+    
+    private void loadImages() {
+    	try {
+    		// helados
+    		fresaImage = ImageIO.read(getClass().getResource("/resources/images/fresa.png"));
+    		chocolateImage = ImageIO.read(getClass().getResource("/resources/images/chocolate.png"));
+    		vainillaImage = ImageIO.read(getClass().getResource("/resources/images/vainilla.png"));
+
+    		// muros
+    		iceImage = ImageIO.read(getClass().getResource("/resources/images/ice.png"));
+    		muroImage = ImageIO.read(getClass().getResource("/resources/images/muro.png"));
+
+    		// objetos
+    		fogataImage = ImageIO.read(getClass().getResource("/resources/images/fogata.png"));
+    		baldosaCaliente = ImageIO.read(getClass().getResource("/resources/images/baldosaCaliente.png"));
+    		nieveImage = ImageIO.read(getClass().getResource("/resources/images/nieve.png"));
+
+    		//enemigos
+    		calamarImage = ImageIO.read(getClass().getResource("/resources/images/calamar.png"));
+    		trollImage = ImageIO.read(getClass().getResource("/resources/images/troll.png"));
+    		narvalImage = ImageIO.read(getClass().getResource("/resources/images/narval.png"));
+    		
+    		//frutas
+    		platanoImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
+    		uvaImage = ImageIO.read(getClass().getResource("/resources/images/uva.png"));
+    		piñaImage = ImageIO.read(getClass().getResource("/resources/images/piña.png"));
+    		cerezaImage = ImageIO.read(getClass().getResource("/resources/images/cereza.png"));
+    		defaulFruitImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
+    		
+    	} catch (Exception e) { 
+            System.out.println("Error cargando imagen. Verifica que la carpeta 'images' esté DENTRO de 'src'");
+            e.printStackTrace();
+    	}	
     }
     
     @Override
@@ -55,19 +113,25 @@ class GameBoardPanel extends JPanel {
                 int drawX = offsetX + x * CELL_SIZE;
                 int drawY = offsetY + y * CELL_SIZE;
                 
+                Image imgToDraw;
+                
                 // Color de fondo
                 if (level.isWall(pos)) {
-                    g2d.setColor(new Color(70, 70, 70));
+                    imgToDraw = muroImage;
                 } else if (level.isIceBlock(pos)) {
-                    g2d.setColor(new Color(173, 216, 230));
+                    imgToDraw = iceImage; 
                 } else {
-                    g2d.setColor(new Color(240, 248, 255));
+                    imgToDraw = nieveImage;
                 }
-                g2d.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
                 
-                // Borde
-                g2d.setColor(Color.GRAY);
-                g2d.drawRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                // DIBUJAR LA IMAGEN DEL ESCENARIO
+                if (imgToDraw != null) {
+                    g2d.drawImage(imgToDraw, drawX, drawY, CELL_SIZE, CELL_SIZE, this);
+                } else {
+                    // Fallback: usar el color de fondo si la imagen falla
+                    g2d.setColor(new Color(240, 248, 255));
+                    g2d.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                }
                 
                 // Contenido de la celda
                 drawCellContent(g2d, pos, drawX, drawY);
@@ -84,23 +148,37 @@ class GameBoardPanel extends JPanel {
         
         // Dibujar jugador
         if (player != null && player.getPosition() != null && player.getPosition().equals(pos)) {
-            g2d.setColor(Color.decode(player.getFlavor().getColor()));
-            g2d.fillOval(x + 5, y + 5, CELL_SIZE - 10, CELL_SIZE - 10);
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 20));
-            g2d.drawString("P", x + 13, y + 27);
-        }
-        
+        	//faltan helados :(
+        	switch (player.getFlavor()) {
+				case CHOCOLATE: {
+		        	g2d.drawImage(chocolateImage, x, y, CELL_SIZE, CELL_SIZE, this);
+				}
+				case STRAWBERRY: {
+		        	g2d.drawImage(fresaImage, x, y, CELL_SIZE, CELL_SIZE, this);
+				}
+				case VANILLA: {
+		        	g2d.drawImage(vainillaImage, x, y, CELL_SIZE, CELL_SIZE, this);
+				}
+        	}
+        	
+        } 
+
         // Dibujar enemigos
         if (level.getEnemies() != null) {
             for (Enemy enemy : level.getEnemies()) {
                 if (enemy != null && enemy.getPosition() != null && 
                     enemy.getPosition().equals(pos) && enemy.isAlive()) {
-                    g2d.setColor(Color.RED);
-                    g2d.fillOval(x + 5, y + 5, CELL_SIZE - 10, CELL_SIZE - 10);
-                    g2d.setColor(Color.WHITE);
-                    g2d.setFont(new Font("Arial", Font.BOLD, 16));
-                    g2d.drawString(enemy.getSymbol(), x + 13, y + 27);
+                	switch (enemy.getEnemyType()) {
+					case ORANGE_SQUID:
+						g2d.drawImage(calamarImage, x, y, CELL_SIZE, CELL_SIZE, this);
+						break;
+					case POT:
+						g2d.drawImage(narvalImage, x, y, CELL_SIZE, CELL_SIZE, this);
+					case TROLL:
+						g2d.drawImage(trollImage, x, y, CELL_SIZE, CELL_SIZE, this);
+					default:
+						break;
+					}
                 }
             }
         }
@@ -110,22 +188,27 @@ class GameBoardPanel extends JPanel {
             for (Fruit fruit : level.getFruits()) {
                 if (fruit != null && fruit.getPosition() != null && 
                     fruit.getPosition().equals(pos) && !fruit.isCollected()) {
-                    Color fruitColor;
-                    switch (fruit.getFruitType()) {
+                    Image imgToDraw = defaulFruitImage;
+                	
+                	switch (fruit.getFruitType()) {
                         case GRAPE:
-                            fruitColor = new Color(138, 43, 226);
+                            imgToDraw = uvaImage;
                             break;
                         case BANANA:
-                            fruitColor = new Color(255, 255, 0);
+                        	imgToDraw = platanoImage;
                             break;
-                        default:
-                            fruitColor = Color.GREEN;
+                        case CHERRY:
+                        	imgToDraw = cerezaImage;
+                        case PINEAPPLE:
+                        	imgToDraw = piñaImage;
+                       
                     }
-                    g2d.setColor(fruitColor);
-                    g2d.fillOval(x + 10, y + 10, CELL_SIZE - 20, CELL_SIZE - 20);
-                    g2d.setColor(Color.BLACK);
-                    g2d.setFont(new Font("Arial", Font.BOLD, 14));
-                    g2d.drawString(fruit.getSymbol(), x + 15, y + 27);
+                	if (imgToDraw != null) {
+                		g2d.drawImage(imgToDraw, x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, this);
+                	} else {
+                       g2d.setColor(Color.GREEN);
+                       g2d.fillOval(x + 10, y + 10, CELL_SIZE - 20, CELL_SIZE - 20);
+                   }
                 }
             }
         }
