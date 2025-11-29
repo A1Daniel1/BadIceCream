@@ -51,11 +51,9 @@ public class GameController implements KeyListener {
     
     @Override
     public void keyReleased(KeyEvent e) {
-        // No se necesita implementación
     }
     
     @Override
     public void keyTyped(KeyEvent e) {
-        // No se necesita implementación
     }
 }

@@ -15,19 +15,17 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
-//... tus imports actuales ...
-import java.awt.Image; // IMPORTANTE
-import java.io.IOException; // IMPORTANTE
-import javax.imageio.ImageIO; // IMPORTANTE
-import java.io.File; // Opcional si usas carga por archivo direct
+import java.awt.Image;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 import javax.swing.JPanel;
 
 /**
  * Panel del tablero de juego
  */
-class GameBoardPanel extends JPanel {
+public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     public Game game;
     private static final int CELL_SIZE = 40;
@@ -56,37 +54,37 @@ class GameBoardPanel extends JPanel {
     }
     
     private void loadImages() {
-    	try {
-    		// helados
-    		fresaImage = ImageIO.read(getClass().getResource("/resources/images/fresa.png"));
-    		chocolateImage = ImageIO.read(getClass().getResource("/resources/images/chocolate.png"));
-    		vainillaImage = ImageIO.read(getClass().getResource("/resources/images/vainilla.png"));
+        try {
+            // helados
+            fresaImage = ImageIO.read(getClass().getResource("/resources/images/fresa.png"));
+            chocolateImage = ImageIO.read(getClass().getResource("/resources/images/chocolate.png"));
+            vainillaImage = ImageIO.read(getClass().getResource("/resources/images/vainilla.png"));
 
-    		// muros
-    		iceImage = ImageIO.read(getClass().getResource("/resources/images/ice.png"));
-    		muroImage = ImageIO.read(getClass().getResource("/resources/images/muro.png"));
+            // muros
+            iceImage = ImageIO.read(getClass().getResource("/resources/images/ice.png"));
+            muroImage = ImageIO.read(getClass().getResource("/resources/images/muro.png"));
 
-    		// objetos
-    		fogataImage = ImageIO.read(getClass().getResource("/resources/images/fogata.png"));
-    		baldosaCaliente = ImageIO.read(getClass().getResource("/resources/images/baldosaCaliente.png"));
-    		nieveImage = ImageIO.read(getClass().getResource("/resources/images/nieve.png"));
+            // objetos
+            fogataImage = ImageIO.read(getClass().getResource("/resources/images/fogata.png"));
+            baldosaCaliente = ImageIO.read(getClass().getResource("/resources/images/baldosaCaliente.png"));
+            nieveImage = ImageIO.read(getClass().getResource("/resources/images/nieve.png"));
 
-    		//enemigos
-    		calamarImage = ImageIO.read(getClass().getResource("/resources/images/calamar.png"));
-    		trollImage = ImageIO.read(getClass().getResource("/resources/images/troll.png"));
-    		narvalImage = ImageIO.read(getClass().getResource("/resources/images/narval.png"));
-    		
-    		//frutas
-    		platanoImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
-    		uvaImage = ImageIO.read(getClass().getResource("/resources/images/uva.png"));
-    		piñaImage = ImageIO.read(getClass().getResource("/resources/images/piña.png"));
-    		cerezaImage = ImageIO.read(getClass().getResource("/resources/images/cereza.png"));
-    		defaulFruitImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
-    		
-    	} catch (Exception e) { 
+            // enemigos
+            calamarImage = ImageIO.read(getClass().getResource("/resources/images/calamar.png"));
+            trollImage = ImageIO.read(getClass().getResource("/resources/images/troll.png"));
+            narvalImage = ImageIO.read(getClass().getResource("/resources/images/narval.png"));
+            
+            // frutas
+            platanoImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
+            uvaImage = ImageIO.read(getClass().getResource("/resources/images/uva.png"));
+            piñaImage = ImageIO.read(getClass().getResource("/resources/images/piña.png"));
+            cerezaImage = ImageIO.read(getClass().getResource("/resources/images/cereza.png"));
+            defaulFruitImage = ImageIO.read(getClass().getResource("/resources/images/platano.png"));
+            
+        } catch (Exception e) { 
             System.out.println("Error cargando imagen. Verifica que la carpeta 'images' esté DENTRO de 'src'");
             e.printStackTrace();
-    	}	
+        }    
     }
     
     @Override
@@ -128,17 +126,14 @@ class GameBoardPanel extends JPanel {
                 if (imgToDraw != null) {
                     g2d.drawImage(imgToDraw, drawX, drawY, CELL_SIZE, CELL_SIZE, this);
                 } else {
-                    // Fallback: usar el color de fondo si la imagen falla
                     g2d.setColor(new Color(240, 248, 255));
                     g2d.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
                 }
                 
-                // Contenido de la celda
                 drawCellContent(g2d, pos, drawX, drawY);
             }
         }
         
-        // Dibujar overlay de estado
         drawStateOverlay(g2d);
     }
     
@@ -148,37 +143,37 @@ class GameBoardPanel extends JPanel {
         
         // Dibujar jugador
         if (player != null && player.getPosition() != null && player.getPosition().equals(pos)) {
-        	//faltan helados :(
-        	switch (player.getFlavor()) {
-				case CHOCOLATE: {
-		        	g2d.drawImage(chocolateImage, x, y, CELL_SIZE, CELL_SIZE, this);
-				}
-				case STRAWBERRY: {
-		        	g2d.drawImage(fresaImage, x, y, CELL_SIZE, CELL_SIZE, this);
-				}
-				case VANILLA: {
-		        	g2d.drawImage(vainillaImage, x, y, CELL_SIZE, CELL_SIZE, this);
-				}
-        	}
-        	
-        } 
+            switch (player.getFlavor()) {
+                case CHOCOLATE:
+                    g2d.drawImage(chocolateImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                    break;
+                case STRAWBERRY:
+                    g2d.drawImage(fresaImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                    break;
+                case VANILLA:
+                    g2d.drawImage(vainillaImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                    break;
+            }
+        }
 
         // Dibujar enemigos
         if (level.getEnemies() != null) {
             for (Enemy enemy : level.getEnemies()) {
                 if (enemy != null && enemy.getPosition() != null && 
                     enemy.getPosition().equals(pos) && enemy.isAlive()) {
-                	switch (enemy.getEnemyType()) {
-					case ORANGE_SQUID:
-						g2d.drawImage(calamarImage, x, y, CELL_SIZE, CELL_SIZE, this);
-						break;
-					case POT:
-						g2d.drawImage(narvalImage, x, y, CELL_SIZE, CELL_SIZE, this);
-					case TROLL:
-						g2d.drawImage(trollImage, x, y, CELL_SIZE, CELL_SIZE, this);
-					default:
-						break;
-					}
+                    switch (enemy.getEnemyType()) {
+                        case ORANGE_SQUID:
+                            g2d.drawImage(calamarImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                            break;
+                        case POT:
+                            g2d.drawImage(narvalImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                            break;
+                        case TROLL:
+                            g2d.drawImage(trollImage, x, y, CELL_SIZE, CELL_SIZE, this);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -189,26 +184,30 @@ class GameBoardPanel extends JPanel {
                 if (fruit != null && fruit.getPosition() != null && 
                     fruit.getPosition().equals(pos) && !fruit.isCollected()) {
                     Image imgToDraw = defaulFruitImage;
-                	
-                	switch (fruit.getFruitType()) {
+                    
+                    switch (fruit.getFruitType()) {
                         case GRAPE:
                             imgToDraw = uvaImage;
                             break;
                         case BANANA:
-                        	imgToDraw = platanoImage;
+                            imgToDraw = platanoImage;
                             break;
                         case CHERRY:
-                        	imgToDraw = cerezaImage;
+                            imgToDraw = cerezaImage;
+                            break;
                         case PINEAPPLE:
-                        	imgToDraw = piñaImage;
-                       
+                            imgToDraw = piñaImage;
+                            break;
+                        default:
+                            break;
                     }
-                	if (imgToDraw != null) {
-                		g2d.drawImage(imgToDraw, x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, this);
-                	} else {
-                       g2d.setColor(Color.GREEN);
-                       g2d.fillOval(x + 10, y + 10, CELL_SIZE - 20, CELL_SIZE - 20);
-                   }
+                    
+                    if (imgToDraw != null) {
+                        g2d.drawImage(imgToDraw, x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, this);
+                    } else {
+                        g2d.setColor(Color.GREEN);
+                        g2d.fillOval(x + 10, y + 10, CELL_SIZE - 20, CELL_SIZE - 20);
+                    }
                 }
             }
         }

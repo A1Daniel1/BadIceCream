@@ -1,19 +1,17 @@
 package domain;
 
-/**
- * Clase abstracta para enemigos
- */
 public abstract class Enemy extends Unit implements EnemyBehavior {
     protected EnemyType enemyType;
     
     public Enemy(Position position, EnemyType enemyType) {
         super(position);
         this.enemyType = enemyType;
-        // Regenerar el ID después de asignar el enemyType
         this.id = generateId();
     }
     
-    public EnemyType getEnemyType() { return enemyType; }
+    public EnemyType getEnemyType() { 
+        return enemyType; 
+    }
     
     @Override
     public boolean canChasePlayer() {
@@ -34,7 +32,9 @@ public abstract class Enemy extends Unit implements EnemyBehavior {
     }
     
     @Override
-    public String getType() { return "Enemy"; }
+    public String getType() { 
+        return "Enemy"; 
+    }
     
     public abstract void updateBehavior(Level level, Player player);
 }

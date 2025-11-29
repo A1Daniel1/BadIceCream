@@ -1,8 +1,6 @@
 package presentation;
 
 import domain.Game;
-import domain.Position;
-import domain.Level;
 import domain.GameController;
 import domain.IceCreamFlavour;
 import domain.GameState;
@@ -17,9 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-/**
- * Frame principal del juego
- */
 class GameFrame extends JFrame {
     private static final long serialVersionUID = 1L;
     private Game game;
@@ -39,7 +34,6 @@ class GameFrame extends JFrame {
         game = new Game();
         controller = new GameController(game);
         
-        // Mostrar menú inicial
         showMenu();
     }
     
@@ -62,25 +56,20 @@ class GameFrame extends JFrame {
             
             getContentPane().removeAll();
             
-            // Panel de juego
             gamePanel = new JPanel(new BorderLayout());
             
-            // HUD
             hudPanel = new HUDPanel(game, this);
             gamePanel.add(hudPanel, BorderLayout.NORTH);
             
-            // Tablero
             boardPanel = new GameBoardPanel(game);
             gamePanel.add(boardPanel, BorderLayout.CENTER);
             
             add(gamePanel);
             
-            // Remover listeners previos
             for (KeyListener kl : getKeyListeners()) {
                 removeKeyListener(kl);
             }
             
-            // Agregar listener de teclado
             addKeyListener(controller);
             setFocusable(true);
             requestFocus();
@@ -88,7 +77,6 @@ class GameFrame extends JFrame {
             revalidate();
             repaint();
             
-            // Iniciar game loop
             startGameLoop();
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,17 +97,25 @@ class GameFrame extends JFrame {
             @Override
             public void run() {
                 try {
-                    if (game.getState() == GameState.PLAYING) {
+                    GameState currentState = game.getState();
+                    
+                    if (currentState == GameState.PLAYING) {
                         Game.update();
-                        SwingUtilities.invokeLater(() -> {
-                            if (hudPanel != null) hudPanel.update();
-                            if (boardPanel != null) boardPanel.repaint();
-                        });
+                    }
+                    
+                    SwingUtilities.invokeLater(() -> {
+                        if (hudPanel != null) hudPanel.update();
+                        if (boardPanel != null) boardPanel.repaint();
+                    });
+                    
+                    if (currentState == GameState.VICTORY || currentState == GameState.GAME_OVER) {
+                        Thread.sleep(3000);
+                        SwingUtilities.invokeLater(() -> showMenu());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 0, 500); // Actualizar cada 500ms
+        }, 0, 100);
     }
 }

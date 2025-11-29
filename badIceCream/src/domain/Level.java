@@ -57,7 +57,7 @@ public class Level {
         // Paredes internas
         for (int i = 3; i < 12; i += 2) {
             for (int j = 2; j < 9; j += 2) {
-                walls.add(new Wall(new Position(i, j)));
+                iceBlocks.add(new IceBlock(new Position(i, j)));
             }
         }
         

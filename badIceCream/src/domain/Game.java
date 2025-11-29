@@ -36,7 +36,7 @@ public class Game {
                 player.addScore(fruit.getPoints());
             }
             
-            // Verificar victoria
+            // Verificar victoria DESPUÉS de recoger la fruta
             if (level.allFruitsCollected()) {
                 state = GameState.VICTORY;
             }
@@ -56,7 +56,10 @@ public class Game {
     }
     
     public static void update() {
-        if (state != GameState.PLAYING) return;
+        // NO actualizar si el juego no está en PLAYING
+        if (state != GameState.PLAYING) {
+            return;
+        }
         
         level.update();
         checkCollisions();
@@ -67,7 +70,7 @@ public class Game {
         Position playerPos = player.getPosition();
         
         for (Enemy enemy : level.getEnemies()) {
-            if (enemy.isAlive() && enemy.getPosition().equals(playerPos)) {
+            if (enemy != null && enemy.isAlive() && enemy.getPosition().equals(playerPos)) {
                 player.die();
                 state = GameState.GAME_OVER;
                 return;

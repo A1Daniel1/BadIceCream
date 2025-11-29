@@ -3,15 +3,17 @@ package domain;
 public class Troll extends Enemy {
     private Position[] patrolPath;
     private int pathIndex;
+    private int moveCounter;
+    private static final int MOVE_DELAY = 3;
     
     public Troll(Position position) {
         super(position, EnemyType.TROLL);
         this.pathIndex = 0;
+        this.moveCounter = 0;
         initializePatrolPath();
     }
     
     private void initializePatrolPath() {
-        // Patrullaje simple en forma de cuadrado
         patrolPath = new Position[] {
             position.clone(),
             new Position(position.getX(), position.getY() + 1),
@@ -39,9 +41,13 @@ public class Troll extends Enemy {
     
     @Override
     public void updateBehavior(Level level, Player player) {
-        Position nextPos = getNextPosition(level, player);
-        if (level.canMoveTo(nextPos)) {
-            move(nextPos);
+        moveCounter++;
+        if (moveCounter >= MOVE_DELAY) {
+            moveCounter = 0;
+            Position nextPos = getNextPosition(level, player);
+            if (level.canMoveTo(nextPos)) {
+                move(nextPos);
+            }
         }
     }
     
@@ -51,5 +57,7 @@ public class Troll extends Enemy {
     }
     
     @Override
-    public String getSymbol() { return "T"; }
+    public String getSymbol() { 
+        return "T"; 
+    }
 }
