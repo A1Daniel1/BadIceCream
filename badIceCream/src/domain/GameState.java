@@ -1,9 +1,0 @@
-package domain;
-
-public enum GameState {
-    MENU,
-    PLAYING,
-    PAUSED,
-    GAME_OVER,
-    VICTORY
-}
