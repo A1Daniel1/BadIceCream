@@ -26,29 +26,29 @@ public class GameFrame extends JFrame {
     private Timer gameTimer;
     private Timer secondTimer;
     private boolean gameEnded = false;
-    
+
     public GameFrame() {
         setTitle("Bad Dopo-Cream");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 750);
         setLocationRelativeTo(null);
-        
+
         game = new Game();
         controller = new GameController(game);
-        
+
         // Iniciar música de fondo al crear el frame
         MusicManager.playBackgroundMusic("background.wav");
-        
+
         showMenu();
     }
-    
+
     public void showMenu() {
         getContentPane().removeAll();
         menuPanel = new MenuPanel(this);
         add(menuPanel);
         revalidate();
         repaint();
-        
+
         if (gameTimer != null) {
             gameTimer.cancel();
             gameTimer = null;
@@ -57,53 +57,53 @@ public class GameFrame extends JFrame {
             secondTimer.cancel();
             secondTimer = null;
         }
-        
+
         // Asegurar que la música siga sonando
         if (!MusicManager.isPlaying() && !MusicManager.isMuted()) {
             MusicManager.resumeMusic();
         }
-        
+
         gameEnded = false;
     }
-    
+
     public void startGame(IceCreamFlavour flavor) {
         try {
             game.startGame(1, flavor);
             gameEnded = false;
-            
+
             getContentPane().removeAll();
-            
+
             gamePanel = new JPanel(new BorderLayout());
-            
+
             hudPanel = new HUDPanel(game, this);
             gamePanel.add(hudPanel, BorderLayout.NORTH);
-            
+
             boardPanel = new GameBoardPanel(game);
             gamePanel.add(boardPanel, BorderLayout.CENTER);
-            
+
             add(gamePanel);
-            
+
             for (KeyListener kl : getKeyListeners()) {
                 removeKeyListener(kl);
             }
-            
+
             addKeyListener(controller);
             setFocusable(true);
             requestFocus();
-            
+
             revalidate();
             repaint();
-            
+
             startGameLoop();
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, 
-                "Error al iniciar el juego: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al iniciar el juego: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void startGameLoop() {
         if (gameTimer != null) {
             gameTimer.cancel();
@@ -111,7 +111,7 @@ public class GameFrame extends JFrame {
         if (secondTimer != null) {
             secondTimer.cancel();
         }
-        
+
         // Timer principal del juego - actualiza lógica a 10 FPS
         gameTimer = new Timer();
         gameTimer.scheduleAtFixedRate(new TimerTask() {
@@ -119,16 +119,17 @@ public class GameFrame extends JFrame {
             public void run() {
                 try {
                     GameState currentState = game.getState();
-                    
+
                     if (currentState == GameState.PLAYING) {
                         Game.update();
                     }
-                    
+
                     // Actualizar el panel del juego
                     SwingUtilities.invokeLater(() -> {
-                        if (boardPanel != null) boardPanel.repaint();
+                        if (boardPanel != null)
+                            boardPanel.repaint();
                     });
-                    
+
                     // Detectar fin del juego y volver al menú después de 3 segundos
                     if (!gameEnded && (currentState == GameState.VICTORY || currentState == GameState.GAME_OVER)) {
                         gameEnded = true;
@@ -139,7 +140,7 @@ public class GameFrame extends JFrame {
                         if (secondTimer != null) {
                             secondTimer.cancel();
                         }
-                        
+
                         // Esperar 3 segundos antes de volver al menú
                         Timer endTimer = new Timer();
                         endTimer.schedule(new TimerTask() {
@@ -155,7 +156,7 @@ public class GameFrame extends JFrame {
                 }
             }
         }, 0, 100);
-        
+
         // Timer separado para actualizar el HUD cada 100ms
         secondTimer = new Timer();
         secondTimer.scheduleAtFixedRate(new TimerTask() {
@@ -163,7 +164,8 @@ public class GameFrame extends JFrame {
             public void run() {
                 try {
                     SwingUtilities.invokeLater(() -> {
-                        if (hudPanel != null) hudPanel.update();
+                        if (hudPanel != null)
+                            hudPanel.update();
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -171,7 +173,7 @@ public class GameFrame extends JFrame {
             }
         }, 0, 100);
     }
-    
+
     @Override
     public void dispose() {
         // Detener música al cerrar el juego

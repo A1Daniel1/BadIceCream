@@ -5,16 +5,16 @@ import java.awt.event.KeyListener;
 
 public class GameController implements KeyListener {
     private Game game;
-    
+
     public GameController(Game game) {
         this.game = game;
     }
-    
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        
-        switch(keyCode) {
+
+        switch (keyCode) {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
                 game.movePlayer(Direction.UP);
@@ -32,10 +32,15 @@ public class GameController implements KeyListener {
                 game.movePlayer(Direction.RIGHT);
                 break;
             case KeyEvent.VK_SPACE:
-                if (e.isShiftDown()) {
-                    game.destroyIceBlock();
-                } else {
-                    game.createIceBlock();
+                // Lógica contextual: si hay hielo enfrente, destruir. Si no, crear.
+                Player player = game.getPlayer();
+                if (player != null) {
+                    Position targetPos = player.getPosition().add(player.getDirection());
+                    if (game.getLevel().isIceBlock(targetPos)) {
+                        game.destroyIceBlock();
+                    } else {
+                        game.createIceBlock();
+                    }
                 }
                 break;
             case KeyEvent.VK_P:
@@ -48,11 +53,11 @@ public class GameController implements KeyListener {
                 break;
         }
     }
-    
+
     @Override
     public void keyReleased(KeyEvent e) {
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
