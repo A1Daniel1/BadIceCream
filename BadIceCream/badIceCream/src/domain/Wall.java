@@ -2,14 +2,20 @@
 package domain;
 
 /**
- * Pared (obstáculo permanente)
+ * Representa una pared en el juego.
+ * Las paredes son obstáculos indestructibles que bloquean el movimiento.
  */
 public class Wall extends GameObject {
+    /**
+     * Constructor de la clase Wall.
+     * 
+     * @param position La posición de la pared.
+     */
     public Wall(Position position) {
         super(position);
         this.id = generateId();
     }
-    
+
     @Override
     protected String generateId() {
         if (position != null) {
@@ -17,10 +23,14 @@ public class Wall extends GameObject {
         }
         return "WALL_" + System.nanoTime();
     }
-    
+
     @Override
-    public String getSymbol() { return "█"; }
-    
+    public String getSymbol() {
+        return "█";
+    }
+
     @Override
-    public String getType() { return "Wall"; }
+    public String getType() {
+        return "Wall";
+    }
 }

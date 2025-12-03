@@ -3,84 +3,107 @@ package domain;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Pruebas unitarias para la clase Level.
+ * Verifica la carga de niveles, validación de movimientos y gestión de objetos.
+ */
 public class LevelTest {
 
+    /**
+     * Verifica la creación correcta de un nivel.
+     */
     @Test
     public void testLevelCreation() {
         Level level = new Level(1);
 
-        assertNotNull(level, "Level should not be null");
-        assertTrue(level.getWidth() > 0, "Width should be positive");
-        assertTrue(level.getHeight() > 0, "Height should be positive");
+        assertNotNull(level, "El nivel no debería ser null");
+        assertTrue(level.getWidth() > 0, "El ancho debería ser positivo");
+        assertTrue(level.getHeight() > 0, "El alto debería ser positivo");
     }
 
+    /**
+     * Verifica que las colecciones del nivel (muros, frutas, enemigos) no sean
+     * nulas.
+     */
     @Test
     public void testLevelCollections() {
         Level level = new Level(1);
 
-        assertNotNull(level.getWalls(), "Walls should not be null");
-        assertNotNull(level.getIceBlocks(), "Ice blocks should not be null");
-        assertNotNull(level.getFruits(), "Fruits should not be null");
-        assertNotNull(level.getEnemies(), "Enemies should not be null");
+        assertNotNull(level.getWalls(), "Los muros no deberían ser null");
+        assertNotNull(level.getIceBlocks(), "Los bloques de hielo no deberían ser null");
+        assertNotNull(level.getFruits(), "Las frutas no deberían ser null");
+        assertNotNull(level.getEnemies(), "Los enemigos no deberían ser null");
 
-        assertFalse(level.getWalls().isEmpty(), "Level 1 should have walls");
-        assertFalse(level.getFruits().isEmpty(), "Level 1 should have fruits");
-        assertFalse(level.getEnemies().isEmpty(), "Level 1 should have enemies");
+        assertFalse(level.getWalls().isEmpty(), "El nivel 1 debería tener muros");
+        assertFalse(level.getFruits().isEmpty(), "El nivel 1 debería tener frutas");
+        assertFalse(level.getEnemies().isEmpty(), "El nivel 1 debería tener enemigos");
     }
 
+    /**
+     * Verifica la validación de movimientos (colisiones con muros).
+     */
     @Test
     public void testMovementValidation() {
         Level level = new Level(1);
 
-        // Test border positions (should be walls)
+        // Prueba posiciones de borde (deberían ser muros)
         Position borderPos = new Position(0, 0);
-        assertFalse(level.canMoveTo(borderPos), "Should not be able to move into border wall");
+        assertFalse(level.canMoveTo(borderPos), "No debería poder moverse hacia un muro del borde");
 
-        // Test center position (should be movable)
+        // Prueba posición central (debería ser transitable)
         Position centerPos = new Position(7, 5);
-        assertTrue(level.canMoveTo(centerPos), "Should be able to move to center position");
+        assertTrue(level.canMoveTo(centerPos), "Debería poder moverse a una posición central libre");
     }
 
+    /**
+     * Verifica la existencia y recuperación de frutas en el nivel.
+     */
     @Test
     public void testFruitCollection() {
         Level level = new Level(1);
 
-        // Get a fruit position
+        // Obtener una posición de fruta
         Fruit firstFruit = level.getFruits().get(0);
         Position fruitPos = firstFruit.getPosition();
 
-        // Verify fruit exists at that position
+        // Verificar que la fruta existe en esa posición
         Fruit foundFruit = level.getFruitAt(fruitPos);
-        assertNotNull(foundFruit, "Should find fruit at its position");
-        assertEquals(firstFruit, foundFruit, "Found fruit should be the same");
+        assertNotNull(foundFruit, "Debería encontrar fruta en su posición");
+        assertEquals(firstFruit, foundFruit, "La fruta encontrada debería ser la misma");
     }
 
+    /**
+     * Verifica la lógica de recolección de todas las frutas.
+     */
     @Test
     public void testAllFruitsCollected() {
         Level level = new Level(1);
 
-        // Initially not all fruits should be collected
-        assertFalse(level.allFruitsCollected(), "Initially not all fruits should be collected");
+        // Inicialmente no todas las frutas deberían estar recolectadas
+        assertFalse(level.allFruitsCollected(), "Inicialmente no todas las frutas deberían estar recolectadas");
 
-        // Collect all fruits
+        // Recolectar todas las frutas
         for (Fruit fruit : level.getFruits()) {
             fruit.collect();
         }
 
-        assertTrue(level.allFruitsCollected(), "All fruits should be collected");
+        assertTrue(level.allFruitsCollected(), "Todas las frutas deberían estar recolectadas");
     }
 
+    /**
+     * Verifica la gestión de bloques de hielo (agregar y verificar existencia).
+     */
     @Test
     public void testIceBlockManagement() {
         Level level = new Level(1);
         Position icePos = new Position(5, 5);
 
-        // Add ice block
+        // Agregar bloque de hielo
         IceBlock iceBlock = new IceBlock(icePos);
         level.addIceBlock(iceBlock);
 
-        // Verify ice block exists
-        assertTrue(level.isIceBlock(icePos), "Should have ice block at position");
-        assertEquals(iceBlock, level.getIceBlockAt(icePos), "Should retrieve the same ice block");
+        // Verificar existencia del bloque de hielo
+        assertTrue(level.isIceBlock(icePos), "Debería haber un bloque de hielo en la posición");
+        assertEquals(iceBlock, level.getIceBlockAt(icePos), "Debería recuperar el mismo bloque de hielo");
     }
 }

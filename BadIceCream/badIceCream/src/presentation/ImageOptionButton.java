@@ -4,10 +4,20 @@ import java.awt.*;
 import java.net.URL;
 import javax.swing.*;
 
+/**
+ * Botón personalizado que muestra una imagen y texto.
+ * Se utiliza en los menús de selección.
+ */
 public class ImageOptionButton extends JButton {
 
     private Image image;
 
+    /**
+     * Constructor de la clase ImageOptionButton.
+     * 
+     * @param text      El texto a mostrar en el botón.
+     * @param imageName El nombre del archivo de imagen a cargar.
+     */
     public ImageOptionButton(String text, String imageName) {
         super(text);
 
@@ -30,6 +40,12 @@ public class ImageOptionButton extends JButton {
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Carga el icono desde el sistema de archivos o recursos.
+     * 
+     * @param name Nombre del archivo de imagen.
+     * @return La imagen cargada o null si no se encuentra.
+     */
     private Image loadIcon(String name) {
         java.io.File f = new java.io.File("src/resources/images/" + name);
         if (f.exists()) {
@@ -58,7 +74,7 @@ public class ImageOptionButton extends JButton {
         }
 
         g2.dispose();
-        
+
         super.paintComponent(g);
     }
 }

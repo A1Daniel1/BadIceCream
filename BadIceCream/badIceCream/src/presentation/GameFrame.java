@@ -15,6 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ * Ventana principal del juego.
+ * Gestiona la navegación entre paneles (menú, juego) y el bucle principal de
+ * renderizado.
+ */
 public class GameFrame extends JFrame {
     private static final long serialVersionUID = 1L;
     private Game game;
@@ -27,6 +32,10 @@ public class GameFrame extends JFrame {
     private Timer secondTimer;
     private boolean gameEnded = false;
 
+    /**
+     * Constructor de la clase GameFrame.
+     * Inicializa la ventana, el juego y muestra el menú principal.
+     */
     public GameFrame() {
         setTitle("Bad Dopo-Cream");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +51,10 @@ public class GameFrame extends JFrame {
         showMenu();
     }
 
+    /**
+     * Muestra el panel del menú principal.
+     * Detiene los temporizadores del juego si están activos.
+     */
     public void showMenu() {
         getContentPane().removeAll();
         menuPanel = new MenuPanel(this);
@@ -66,6 +79,12 @@ public class GameFrame extends JFrame {
         gameEnded = false;
     }
 
+    /**
+     * Inicia una nueva partida con el sabor seleccionado.
+     * Configura los paneles de juego y HUD, y arranca el bucle de juego.
+     * 
+     * @param flavor El sabor de helado seleccionado por el jugador.
+     */
     public void startGame(IceCreamFlavour flavor) {
         try {
             game.startGame(1, flavor);
@@ -104,6 +123,9 @@ public class GameFrame extends JFrame {
         }
     }
 
+    /**
+     * Inicia los temporizadores para el bucle de juego y la actualización del HUD.
+     */
     private void startGameLoop() {
         if (gameTimer != null) {
             gameTimer.cancel();

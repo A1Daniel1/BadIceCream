@@ -3,13 +3,28 @@ package domain;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Controlador de entrada del juego.
+ * Escucha los eventos de teclado y los traduce en acciones del juego (mover,
+ * disparar, pausar).
+ */
 public class GameController implements KeyListener {
     private Game game;
 
+    /**
+     * Constructor del controlador.
+     * 
+     * @param game La instancia del juego a controlar.
+     */
     public GameController(Game game) {
         this.game = game;
     }
 
+    /**
+     * Maneja el evento de tecla presionada.
+     * 
+     * @param e El evento de teclado.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -32,7 +47,6 @@ public class GameController implements KeyListener {
                 game.movePlayer(Direction.RIGHT);
                 break;
             case KeyEvent.VK_SPACE:
-                // Lógica contextual: si hay hielo enfrente, destruir. Si no, crear.
                 Player player = game.getPlayer();
                 if (player != null) {
                     Position targetPos = player.getPosition().add(player.getDirection());

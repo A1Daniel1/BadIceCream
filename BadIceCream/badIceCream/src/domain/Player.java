@@ -1,37 +1,61 @@
 package domain;
 
 /**
- * Jugador (Helado)
+ * Representa al jugador (Helado) controlado por el usuario.
+ * Puede moverse, crear y destruir bloques de hielo.
  */
 public class Player extends Unit implements IceInteractor {
     private IceCreamFlavour flavor;
     private int score;
 
+    /**
+     * Constructor de la clase Player.
+     * 
+     * @param position La posición inicial del jugador.
+     * @param flavor   El sabor del helado (determina la apariencia).
+     */
     public Player(Position position, IceCreamFlavour flavor) {
         super(position);
         this.flavor = flavor;
         this.score = 0;
-        // Regenerar el ID después de asignar el flavor
         this.id = generateId();
     }
 
+    /**
+     * Obtiene el sabor del helado.
+     * 
+     * @return El sabor del jugador.
+     */
     public IceCreamFlavour getFlavor() {
         return flavor;
     }
 
+    /**
+     * Obtiene la puntuación actual del jugador.
+     * 
+     * @return La puntuación.
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     * Añade puntos a la puntuación del jugador.
+     * 
+     * @param points La cantidad de puntos a añadir.
+     */
     public void addScore(int points) {
         this.score += points;
     }
 
+    /**
+     * Crea una línea de bloques de hielo en la dirección que mira el jugador.
+     * La creación se detiene si encuentra un obstáculo o un enemigo.
+     * 
+     * @param level El nivel actual donde se crearán los bloques.
+     */
     @Override
     public void createIceBlock(Level level) {
-        if (position == null || direction == null || level == null)
-            return;
-
         Position currentPos = position.add(direction);
         while (level.canPlaceIceBlock(currentPos) && !level.hasEnemyAt(currentPos)) {
             level.addIceBlock(new IceBlock(currentPos));
@@ -39,11 +63,13 @@ public class Player extends Unit implements IceInteractor {
         }
     }
 
+    /**
+     * Destruye una línea de bloques de hielo en la dirección que mira el jugador.
+     * 
+     * @param level El nivel actual donde se destruirán los bloques.
+     */
     @Override
     public void destroyIceBlock(Level level) {
-        if (position == null || direction == null || level == null)
-            return;
-
         Position currentPos = position.add(direction);
 
         // Destruir en cadena (efecto dominó)
@@ -56,14 +82,26 @@ public class Player extends Unit implements IceInteractor {
         }
     }
 
+    /**
+     * Indica si el jugador tiene la capacidad de romper hielo.
+     * 
+     * @return true siempre, ya que el jugador puede romper hielo.
+     */
     @Override
     public boolean canBreakIce() {
         return true;
     }
 
+    /**
+     * Verifica si el jugador puede moverse a una posición específica.
+     * 
+     * @param position La posición destino.
+     * @param level    El nivel actual.
+     * @return true si la posición es válida en el nivel.
+     */
     @Override
     public boolean canMoveTo(Position position, Level level) {
-        return level != null && level.canMoveTo(position);
+        return level.canMoveTo(position);
     }
 
     @Override

@@ -3,8 +3,19 @@ package presentation;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * Panel para la selección del modo de juego.
+ * Permite elegir entre diferentes configuraciones de jugadores (actualmente
+ * solo visual).
+ */
 public class MenuModoPanel extends BackgroundPanel {
 
+    /**
+     * Constructor de la clase MenuModoPanel.
+     * 
+     * @param frame  La ventana principal del juego.
+     * @param parent El panel contenedor del menú.
+     */
     public MenuModoPanel(GameFrame frame, MenuPanel parent) {
         super("src/resources/images/fondo.png");
 
@@ -40,20 +51,20 @@ public class MenuModoPanel extends BackgroundPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 // Fondo redondeado
                 g2.setColor(new Color(0, 0, 0, 160));
                 g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
-                
+
                 g2.dispose();
             }
         };
-        
+
         roundedPanel.setLayout(new GridLayout(2, 2, 25, 25));
         roundedPanel.setPreferredSize(new Dimension(600, 600));
         roundedPanel.setOpaque(false);
         roundedPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        
+
         roundedPanel.add(b1);
         roundedPanel.add(b2);
         roundedPanel.add(b3);

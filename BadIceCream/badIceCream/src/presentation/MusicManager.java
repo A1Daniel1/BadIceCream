@@ -6,25 +6,28 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Gestor de música del juego
+ * Gestor de música del juego.
+ * Controla la reproducción de música de fondo, volumen y estado de silencio.
  */
 public class MusicManager {
     private static Clip backgroundMusic;
     private static boolean isMuted = false;
     private static float volume = 0.8f; // Volumen por defecto (0.0 a 1.0)
-    
+
     /**
-     * Carga y reproduce la música de fondo en loop
+     * Carga y reproduce la música de fondo en bucle.
+     * 
+     * @param filename Nombre del archivo de audio a reproducir.
      */
     public static void playBackgroundMusic(String filename) {
         try {
             // Detener música anterior si existe
             stopBackgroundMusic();
-            
+
             // Intentar cargar desde el sistema de archivos
             File audioFile = new File("src/resources/music/" + filename);
             AudioInputStream audioStream;
-            
+
             if (audioFile.exists()) {
                 audioStream = AudioSystem.getAudioInputStream(audioFile);
             } else {
@@ -36,19 +39,19 @@ public class MusicManager {
                 }
                 audioStream = AudioSystem.getAudioInputStream(url);
             }
-            
+
             // Crear el clip de audio
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
-            
+
             // Configurar volumen
             setVolume(volume);
-            
+
             // Reproducir en loop infinito
             backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-            
+
             System.out.println("Música cargada y reproduciendo: " + filename);
-            
+
         } catch (UnsupportedAudioFileException e) {
             System.err.println("Formato de audio no soportado: " + filename);
             System.err.println("Formatos soportados: WAV, AIFF, AU");
@@ -61,9 +64,9 @@ public class MusicManager {
             e.printStackTrace();
         }
     }
-    
+
     /**
-     * Detiene la música de fondo
+     * Detiene y libera los recursos de la música de fondo actual.
      */
     public static void stopBackgroundMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
@@ -71,27 +74,27 @@ public class MusicManager {
             backgroundMusic.close();
         }
     }
-    
+
     /**
-     * Pausa la música
+     * Pausa la reproducción de la música.
      */
     public static void pauseMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
         }
     }
-    
+
     /**
-     * Reanuda la música
+     * Reanuda la reproducción de la música si no está silenciada.
      */
     public static void resumeMusic() {
         if (backgroundMusic != null && !backgroundMusic.isRunning() && !isMuted) {
             backgroundMusic.start();
         }
     }
-    
+
     /**
-     * Alterna entre silenciar y activar sonido
+     * Alterna el estado de silencio (mute) de la música.
      */
     public static void toggleMute() {
         isMuted = !isMuted;
@@ -101,46 +104,53 @@ public class MusicManager {
             resumeMusic();
         }
     }
-    
+
     /**
-     * Configura el volumen de la música
-     * @param vol Volumen entre 0.0 (silencio) y 1.0 (máximo)
+     * Configura el volumen de la música.
+     * 
+     * @param vol Volumen entre 0.0 (silencio) y 1.0 (máximo).
      */
     public static void setVolume(float vol) {
         volume = Math.max(0.0f, Math.min(1.0f, vol));
-        
+
         if (backgroundMusic != null && backgroundMusic.isOpen()) {
             try {
                 FloatControl volumeControl = (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
-                
+
                 // Convertir volumen de 0-1 a decibelios
                 float min = volumeControl.getMinimum();
                 float max = volumeControl.getMaximum();
                 float gain = min + (max - min) * volume;
-                
+
                 volumeControl.setValue(gain);
             } catch (IllegalArgumentException e) {
                 System.err.println("No se pudo ajustar el volumen");
             }
         }
     }
-    
+
     /**
-     * Obtiene el volumen actual
+     * Obtiene el nivel de volumen actual.
+     * 
+     * @return El volumen actual (0.0 a 1.0).
      */
     public static float getVolume() {
         return volume;
     }
-    
+
     /**
-     * Verifica si la música está silenciada
+     * Verifica si la música está silenciada.
+     * 
+     * @return true si está silenciada, false en caso contrario.
      */
     public static boolean isMuted() {
         return isMuted;
     }
-    
+
     /**
-     * Verifica si la música está reproduciendo
+     * Verifica si la música se está reproduciendo actualmente.
+     * 
+     * @return true si se está reproduciendo, false en caso contrario.
      */
     public static boolean isPlaying() {
         return backgroundMusic != null && backgroundMusic.isRunning();

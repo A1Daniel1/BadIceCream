@@ -13,8 +13,18 @@ import javax.swing.JPanel;
 
 import domain.IceCreamFlavour;
 
+/**
+ * Panel para la selección del nivel de juego.
+ * Permite elegir entre los niveles disponibles.
+ */
 public class MenuNivelPanel extends BackgroundPanel {
 
+    /**
+     * Constructor de la clase MenuNivelPanel.
+     * 
+     * @param frame  La ventana principal del juego.
+     * @param parent El panel contenedor del menú.
+     */
     public MenuNivelPanel(GameFrame frame, MenuPanel parent) {
         super("src/resources/images/fondo.png");
 
@@ -32,11 +42,11 @@ public class MenuNivelPanel extends BackgroundPanel {
         nivel1.addActionListener(e -> {
             frame.startGame(parent.getSelectedFlavor());
         });
-        
+
         nivel2.addActionListener(e -> {
             frame.startGame(parent.getSelectedFlavor());
         });
-        
+
         nivel3.addActionListener(e -> {
             frame.startGame(parent.getSelectedFlavor());
         });
@@ -50,19 +60,19 @@ public class MenuNivelPanel extends BackgroundPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 g2.setColor(new Color(0, 0, 0, 160));
                 g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
-                
+
                 g2.dispose();
             }
         };
-        
+
         roundedPanel.setLayout(new GridLayout(1, 3, 25, 25));
         roundedPanel.setPreferredSize(new Dimension(600, 250));
         roundedPanel.setOpaque(false);
         roundedPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        
+
         roundedPanel.add(nivel1);
         roundedPanel.add(nivel2);
         roundedPanel.add(nivel3);

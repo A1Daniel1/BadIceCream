@@ -16,7 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * Panel del HUD (Head-Up Display)
+ * Panel del HUD (Head-Up Display) que muestra información del juego.
+ * Muestra puntuación, tiempo, frutas recolectadas y botones de control.
  */
 public class HUDPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -29,6 +30,12 @@ public class HUDPanel extends JPanel {
     private JButton musicButton;
     private Game game;
 
+    /**
+     * Constructor de la clase HUDPanel.
+     * 
+     * @param game      La instancia del juego.
+     * @param gameFrame La ventana principal del juego.
+     */
     public HUDPanel(Game game, GameFrame gameFrame) {
         this.game = game;
         setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -73,6 +80,10 @@ public class HUDPanel extends JPanel {
         add(menuButton);
     }
 
+    /**
+     * Actualiza la información mostrada en el HUD.
+     * Se llama periódicamente desde el bucle de juego.
+     */
     public void update() {
         Level level = game.getLevel();
         Player player = game.getPlayer();
@@ -96,6 +107,9 @@ public class HUDPanel extends JPanel {
         }
     }
 
+    /**
+     * Alterna el estado de pausa del juego.
+     */
     private void togglePause() {
         if (game.getState() == GameState.PLAYING) {
             game.pause();
@@ -104,6 +118,9 @@ public class HUDPanel extends JPanel {
         }
     }
 
+    /**
+     * Alterna el estado de silencio de la música.
+     */
     private void toggleMusic() {
         MusicManager.toggleMute();
         musicButton.setText(MusicManager.isMuted() ? "♫̸" : "♫");

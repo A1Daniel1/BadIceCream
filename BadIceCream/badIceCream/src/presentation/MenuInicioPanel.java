@@ -14,12 +14,22 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * Panel del menú de inicio.
+ * Muestra el título, logo y botones para jugar, cargar nivel o ver controles.
+ */
 public class MenuInicioPanel extends BackgroundPanel {
 
+    /**
+     * Constructor de la clase MenuInicioPanel.
+     * 
+     * @param frame  La ventana principal del juego.
+     * @param parent El panel contenedor del menú.
+     */
     public MenuInicioPanel(GameFrame frame, MenuPanel parent) {
-        super("src/resources/images/fondo.png"); 
+        super("src/resources/images/fondo.png");
 
-        setLayout(new GridBagLayout()); 
+        setLayout(new GridBagLayout());
 
         CardPanel card = new CardPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -46,9 +56,8 @@ public class MenuInicioPanel extends BackgroundPanel {
 
         jugar.addActionListener(e -> parent.showScreen("modo"));
         cargar.addActionListener(e -> parent.showScreen("nivel"));
-        controles.addActionListener(e ->
-                JOptionPane.showMessageDialog(this,
-                        "WASD/Flechas – Mover\nESPACIO – Crear hielo\nSHIFT+ESPACIO – Romper\nESC – Pausa"));
+        controles.addActionListener(e -> JOptionPane.showMessageDialog(this,
+                "WASD/Flechas – Mover\nESPACIO – Crear hielo\nSHIFT+ESPACIO – Romper\nESC – Pausa"));
 
         card.add(title);
         card.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -63,4 +72,3 @@ public class MenuInicioPanel extends BackgroundPanel {
         add(card);
     }
 }
-
