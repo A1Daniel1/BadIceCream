@@ -8,12 +8,10 @@ import javax.imageio.ImageIO;
 /**
  * Panel actualizado para renderizar ambos jugadores en modos multijugador.
  */
-public class GameBoardPanel extends JPanel {
+public class GameBoardPanel extends JPanel implements GameListener {
     private static final long serialVersionUID = 1L;
     public Game game;
     private static final int CELL_SIZE = 40;
-    
-    private static GameBoardPanel instance;
 
     // Imágenes (mantenidas del código original)
     private Image fresaImage, chocolateImage, vainillaImage;
@@ -26,15 +24,7 @@ public class GameBoardPanel extends JPanel {
         this.game = game;
         setBackground(new Color(200, 230, 255));
         loadImages();
-        instance = this;
-    }
-    
-    public static void forceRepaint() {
-        if (instance != null) {
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                instance.repaint();
-            });
-        }
+        game.addListener(this);
     }
 
     private void loadImages() {
@@ -47,8 +37,8 @@ public class GameBoardPanel extends JPanel {
             fogataImage = loadImage("/resources/images/fogata.png");
             baldosaCaliente = loadImage("/resources/images/baldosaCaliente.png");
             nieveImage = loadImage("/resources/images/nieve.png");
-            fogataApagadaImage = loadImageWithFallback("/resources/images/fogataApagada.png", 
-                                                        fogataImage, 0.5f);
+            fogataApagadaImage = loadImageWithFallback("/resources/images/fogataApagada.png",
+                    fogataImage, 0.5f);
             calamarImage = loadImage("/resources/images/calamar.png");
             trollImage = loadImage("/resources/images/troll.png");
             macetaImage = loadImage("/resources/images/maceta.png");
@@ -64,17 +54,32 @@ public class GameBoardPanel extends JPanel {
             System.err.println("Error cargando imágenes: " + e.getMessage());
         }
     }
-    
+
     private Image loadImage(String path) throws Exception {
         return ImageIO.read(getClass().getResource(path));
     }
-    
+
     private Image loadImageWithFallback(String path, Image fallback, float opacity) {
         try {
             return ImageIO.read(getClass().getResource(path));
         } catch (Exception e) {
             return fallback;
         }
+    }
+
+    @Override
+    public void onGameUpdated() {
+        repaint();
+    }
+
+    @Override
+    public void onGameOver() {
+        repaint();
+    }
+
+    @Override
+    public void onVictory() {
+        repaint();
     }
 
     @Override
@@ -107,7 +112,7 @@ public class GameBoardPanel extends JPanel {
 
         drawStateOverlay(g2d);
     }
-    
+
     private void drawCell(Graphics2D g2d, Position pos, int x, int y, Level level) {
         Image bgImage = getCellBackground(pos, level);
         if (bgImage != null) {
@@ -118,7 +123,7 @@ public class GameBoardPanel extends JPanel {
         }
         drawCellContent(g2d, pos, x, y, level);
     }
-    
+
     private Image getCellBackground(Position pos, Level level) {
         if (level.isWall(pos)) {
             return muroImage;
@@ -138,33 +143,39 @@ public class GameBoardPanel extends JPanel {
         // Dibujar jugadores
         Player player = game.getPlayer();
         Player player2 = game.getPlayer2();
-        
+
         if (player != null && player.getPosition().equals(pos)) {
             drawPlayer(g2d, player, x, y);
         }
-        
+
         if (player2 != null && player2.getPosition().equals(pos)) {
             drawPlayer(g2d, player2, x, y);
-            
+
             // Si ambos jugadores están en la misma posición, dibujar indicador
             if (player != null && player.getPosition().equals(pos)) {
                 g2d.setColor(new Color(255, 255, 0, 100));
                 g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
             }
         }
-        
+
         drawEnemies(g2d, pos, x, y, level);
         drawFruits(g2d, pos, x, y, level);
     }
-    
+
     private void drawPlayer(Graphics2D g2d, Player player, int x, int y) {
         Image playerImage = null;
         switch (player.getFlavor()) {
-            case CHOCOLATE: playerImage = chocolateImage; break;
-            case STRAWBERRY: playerImage = fresaImage; break;
-            case VANILLA: playerImage = vainillaImage; break;
+            case CHOCOLATE:
+                playerImage = chocolateImage;
+                break;
+            case STRAWBERRY:
+                playerImage = fresaImage;
+                break;
+            case VANILLA:
+                playerImage = vainillaImage;
+                break;
         }
-        
+
         if (playerImage != null) {
             // Si el jugador está muerto, dibujarlo semitransparente
             if (!player.isAlive()) {
@@ -179,7 +190,7 @@ public class GameBoardPanel extends JPanel {
             g2d.fillOval(x + 5, y + 5, CELL_SIZE - 10, CELL_SIZE - 10);
         }
     }
-    
+
     private void drawEnemies(Graphics2D g2d, Position pos, int x, int y, Level level) {
         for (Enemy enemy : level.getEnemies()) {
             if (enemy.isAlive() && enemy.getPosition().equals(pos)) {
@@ -193,20 +204,24 @@ public class GameBoardPanel extends JPanel {
             }
         }
     }
-    
+
     private Image getEnemyImage(Enemy enemy) {
         String className = enemy.getClass().getSimpleName();
         if (className.equals("Narwhal")) {
             return narvalImage;
         }
         switch (enemy.getEnemyType()) {
-            case ORANGE_SQUID: return calamarImage;
-            case POT: return macetaImage;
-            case TROLL: return trollImage;
-            default: return null;
+            case ORANGE_SQUID:
+                return calamarImage;
+            case POT:
+                return macetaImage;
+            case TROLL:
+                return trollImage;
+            default:
+                return null;
         }
     }
-    
+
     private void drawFruits(Graphics2D g2d, Position pos, int x, int y, Level level) {
         for (Fruit fruit : level.getFruits()) {
             if (fruit.getPosition().equals(pos) && !fruit.isCollected()) {
@@ -215,8 +230,8 @@ public class GameBoardPanel extends JPanel {
                     if (fruit.getFruitType().isMovable()) {
                         long time = System.currentTimeMillis();
                         int offset = (int) (Math.sin(time / 200.0) * 2);
-                        g2d.drawImage(fruitImage, x + 2 + offset, y + 2 + offset, 
-                                     CELL_SIZE - 4, CELL_SIZE - 4, this);
+                        g2d.drawImage(fruitImage, x + 2 + offset, y + 2 + offset,
+                                CELL_SIZE - 4, CELL_SIZE - 4, this);
                     } else {
                         g2d.drawImage(fruitImage, x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, this);
                     }
@@ -230,21 +245,27 @@ public class GameBoardPanel extends JPanel {
             }
         }
     }
-    
+
     private Image getFruitImage(Fruit fruit) {
         if (fruit instanceof Cactus) {
             return ((Cactus) fruit).hasThorns() ? cactusPuasImage : cactusImage;
         }
         switch (fruit.getFruitType()) {
-            case GRAPE: return uvaImage;
-            case BANANA: return platanoImage;
-            case CHERRY: return cerezaImage;
-            case PINEAPPLE: return piñaImage;
-            case CACTUS: return cactusImage;
-            default: return defaulFruitImage;
+            case GRAPE:
+                return uvaImage;
+            case BANANA:
+                return platanoImage;
+            case CHERRY:
+                return cerezaImage;
+            case PINEAPPLE:
+                return piñaImage;
+            case CACTUS:
+                return cactusImage;
+            default:
+                return defaulFruitImage;
         }
     }
-    
+
     private void drawThornsIndicator(Graphics2D g2d, int x, int y) {
         g2d.setColor(new Color(255, 0, 0, 100));
         g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
@@ -296,7 +317,7 @@ public class GameBoardPanel extends JPanel {
                 int subWidth = fm.stringWidth(subMessage);
                 g2d.drawString(subMessage, (getWidth() - subWidth) / 2, getHeight() / 2 + 50);
             }
-            
+
             String returnMsg = "Volviendo al menú...";
             g2d.setFont(new Font("Arial", Font.ITALIC, 18));
             fm = g2d.getFontMetrics();
@@ -304,11 +325,11 @@ public class GameBoardPanel extends JPanel {
             g2d.drawString(returnMsg, (getWidth() - returnWidth) / 2, getHeight() / 2 + 90);
         }
     }
-    
+
     private String getGameOverMessage() {
         Player p1 = game.getPlayer();
         Player p2 = game.getPlayer2();
-        
+
         if (game.getGameMode().isMultiplayer() && p1 != null && p2 != null) {
             return String.format("P1: %d | P2: %d", p1.getScore(), p2.getScore());
         } else if (p1 != null) {
@@ -316,11 +337,11 @@ public class GameBoardPanel extends JPanel {
         }
         return "";
     }
-    
+
     private String getVictoryMessage() {
         Player p1 = game.getPlayer();
         Player p2 = game.getPlayer2();
-        
+
         if (game.getGameMode().isMultiplayer() && p1 != null && p2 != null) {
             if (p1.getScore() > p2.getScore()) {
                 return String.format("Ganador: P1 (%d pts)", p1.getScore());

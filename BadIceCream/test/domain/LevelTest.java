@@ -82,11 +82,21 @@ public class LevelTest {
         // Inicialmente no todas las frutas deberían estar recolectadas
         assertFalse(level.allFruitsCollected(), "Inicialmente no todas las frutas deberían estar recolectadas");
 
-        // Recolectar todas las frutas
-        for (Fruit fruit : level.getFruits()) {
+        // Recolectar todas las frutas de la primera oleada
+        for (Fruit fruit : new java.util.ArrayList<>(level.getFruits())) {
             fruit.collect();
         }
 
+        // Verificar que aún no se ha ganado porque falta la segunda oleada
+        level.update(); // Esto debería cargar la siguiente oleada
+        assertFalse(level.allFruitsCollected(), "No debería ganar aún, falta la segunda oleada");
+
+        // Recolectar frutas de la segunda oleada
+        for (Fruit fruit : new java.util.ArrayList<>(level.getFruits())) {
+            fruit.collect();
+        }
+
+        // Ahora sí debería haber ganado
         assertTrue(level.allFruitsCollected(), "Todas las frutas deberían estar recolectadas");
     }
 
