@@ -102,9 +102,9 @@ public class LevelFactory {
 
         // Paredes en forma de cruz
         for (int i = 1; i < 14; i++) {
-            if (i != 7) {
-                walls.add(new Wall(new Position(i, 5)));
-                walls.add(new Wall(new Position(7, i)));
+            if (i != 6) {
+                walls.add(new Wall(new Position(i, 4)));
+                walls.add(new Wall(new Position(6, i)));
             }
         }
 
@@ -192,7 +192,7 @@ public class LevelFactory {
         enemies.add(new OrangeSquid(new Position(7, 9)));
 
         // Fogatas estratégicamente colocadas
-        campfires.add(new Campfire(new Position(1, 1)));
+        campfires.add(new Campfire(new Position(1, 2)));
         campfires.add(new Campfire(new Position(13, 1)));
         campfires.add(new Campfire(new Position(1, 9)));
         campfires.add(new Campfire(new Position(13, 9)));
