@@ -97,14 +97,15 @@ public class LevelFactory {
         List<Enemy> enemies = level.getEnemies();
         List<Campfire> campfires = level.getCampfires();
         List<HotTile> hotTiles = level.getHotTiles();
+        List<IceBlock> iceBlocks = level.getIceBlocks();
 
         // NIVEL 2: Introduce Piñas (frutas móviles) y Calamares (rompen hielo)
 
         // Paredes en forma de cruz
         for (int i = 1; i < 14; i++) {
             if (i != 6) {
-                walls.add(new Wall(new Position(i, 4)));
-                walls.add(new Wall(new Position(6, i)));
+                iceBlocks.add(new IceBlock(new Position(i, 6)));
+                iceBlocks.add(new IceBlock(new Position(6, i)));
             }
         }
 
@@ -195,7 +196,7 @@ public class LevelFactory {
         campfires.add(new Campfire(new Position(1, 2)));
         campfires.add(new Campfire(new Position(13, 1)));
         campfires.add(new Campfire(new Position(1, 9)));
-        campfires.add(new Campfire(new Position(13, 9)));
+        campfires.add(new Campfire(new Position(12, 9)));
 
         // Baldosas calientes en pasillos
         hotTiles.add(new HotTile(new Position(5, 5)));
