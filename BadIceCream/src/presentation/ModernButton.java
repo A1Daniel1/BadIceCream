@@ -23,7 +23,7 @@ public class ModernButton extends JButton {
     public ModernButton(String text) {
         super(text);
         setFocusPainted(false);
-        setForeground(Color.WHITE);
+        setForeground(Color.GRAY);
         setBackground(new Color(52, 152, 219));
         setFont(new Font("SansSerif", Font.BOLD, 22));
         setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
