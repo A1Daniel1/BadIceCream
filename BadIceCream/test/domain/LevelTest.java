@@ -116,4 +116,29 @@ public class LevelTest {
         assertTrue(level.isIceBlock(icePos), "Debería haber un bloque de hielo en la posición");
         assertEquals(iceBlock, level.getIceBlockAt(icePos), "Debería recuperar el mismo bloque de hielo");
     }
+
+    @Test
+    public void testOutOfBoundsMovement() {
+        Level level = new Level(1);
+        assertFalse(level.canMoveTo(new Position(-1, 0)));
+        assertFalse(level.canMoveTo(new Position(0, -1)));
+        assertFalse(level.canMoveTo(new Position(100, 100)));
+    }
+
+    @Test
+    public void testEntityRemoval() {
+        Level level = new Level(1);
+
+        // Remove fruit
+        assertFalse(level.getFruits().isEmpty());
+        Fruit fruit = level.getFruits().get(0);
+        level.getFruits().remove(fruit);
+        assertFalse(level.getFruits().contains(fruit));
+
+        // Remove enemy
+        assertFalse(level.getEnemies().isEmpty());
+        Enemy enemy = level.getEnemies().get(0);
+        level.getEnemies().remove(enemy);
+        assertFalse(level.getEnemies().contains(enemy));
+    }
 }
